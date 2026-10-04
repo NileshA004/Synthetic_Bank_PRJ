@@ -1,0 +1,16 @@
+{
+  "name": "synthetic-bank-quant-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Synthetic Bank - Quantitative Banking Simulation & Analytics",
+  "scripts": {
+    "dev:backend": "python -m uvicorn main:app --host 127.0.0.1 --port 8000 --app-dir ./backend",
+    "dev:frontend": "npm --prefix ./frontend run dev:frontend",
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm --prefix ./frontend run build",
+    "start": "npm --prefix ./frontend run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

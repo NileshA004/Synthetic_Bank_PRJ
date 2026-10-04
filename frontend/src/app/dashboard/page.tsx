@@ -58,7 +58,7 @@ export default function DashboardOverviewPage() {
     { title: "Exploratory Data Analysis", href: "/dashboard/eda", desc: "Correlation matrix & distributions", icon: BarChart3 },
     { title: "Time Series Dynamics", href: "/dashboard/timeseries", desc: "ADF/KPSS stationarity & seasonal decompose", icon: TrendingUp },
     { title: "Predictive ML Models", href: "/dashboard/predictive", desc: "Approved XGBoost & Linear Regressions", icon: BrainCircuit },
-    { title: "Economic Regime Classifier", href: "/dashboard/logistic", desc: "Logistic Regression (Balanced Weighting)", icon: Binary },
+    { title: "Economic Regime Classifier", href: "/dashboard/logistic", desc: "Logistic Regression (90.91% Accuracy)", icon: Binary },
     { title: "Synthetic Banking Models", href: "/dashboard/synthetic", desc: "CTGAN (91.22%) vs TVAE (91.99%) SDMetrics", icon: Cpu },
     { title: "Macro Scenario Engine", href: "/dashboard/scenario", desc: "Interactive rate shocks & multi-model stress tests", icon: Sliders },
   ];
@@ -127,7 +127,7 @@ export default function DashboardOverviewPage() {
         />
         <MetricCard
           title="Regime Accuracy"
-          value={regime ? `${(regime.accuracy * 100).toFixed(2)}%` : "75.00%"}
+          value={regime ? `${(regime.accuracy * 100).toFixed(2)}%` : "90.91%"}
           subtitle="Logistic Classifier"
           variant="emerald"
         />
@@ -156,7 +156,7 @@ export default function DashboardOverviewPage() {
         <MetricCard
           title="Consumer Credit"
           value={`£${formatNumber(m.consumer_credit, 0)}m`}
-          subtitle="Lending (Final: Linear Reg)"
+          subtitle="Lending (Final: Random Forest)"
           variant="amber"
         />
         <MetricCard

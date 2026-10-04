@@ -15,10 +15,8 @@ import {
   ReferenceLine
 } from "recharts";
 import TerminalCard from "@/components/TerminalCard";
-import MetricCard from "@/components/MetricCard";
 import { fetchApi } from "@/lib/api";
 import { formatNumber } from "@/lib/utils";
-import { CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 
 export default function TimeSeriesPage() {
   const [selectedVar, setSelectedVar] = useState<string>("Bank_Rate");
@@ -50,10 +48,6 @@ export default function TimeSeriesPage() {
     return <div className="p-8 text-center font-mono text-xs text-slate-400">CALCULATING TIME SERIES DIAGNOSTICS...</div>;
   }
 
-  const rawAdf = analysis.raw_stationarity.adf;
-  const rawKpss = analysis.raw_stationarity.kpss;
-  const diffAdf = analysis.differenced_stationarity.adf;
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -82,85 +76,6 @@ export default function TimeSeriesPage() {
               </option>
             ))}
           </select>
-        </div>
-      </div>
-
-      {/* Stationarity Diagnostic Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Raw ADF Test */}
-        <div className="p-4 rounded-lg bg-[#111827] border border-[#1E293B]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono uppercase font-bold text-slate-400">
-              Raw Series ADF Test
-            </span>
-            {rawAdf.is_stationary ? (
-              <span className="flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Stationary
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-rose-400 text-xs font-mono font-semibold">
-                <XCircle className="w-3.5 h-3.5" /> Non-Stationary
-              </span>
-            )}
-          </div>
-          <div className="text-xl font-mono font-bold text-slate-100">
-            t = {rawAdf.statistic.toFixed(4)}
-          </div>
-          <div className="mt-2 text-xs font-mono space-y-1 text-slate-400">
-            <div>p-value: <span className="text-cyan-400 font-bold">{rawAdf.p_value.toFixed(4)}</span></div>
-            <div>Critical 5%: {rawAdf.critical_values["5%"].toFixed(4)}</div>
-            <div className="text-[10px] text-slate-500 mt-1">{rawAdf.conclusion}</div>
-          </div>
-        </div>
-
-        {/* Raw KPSS Test */}
-        <div className="p-4 rounded-lg bg-[#111827] border border-[#1E293B]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono uppercase font-bold text-slate-400">
-              Raw Series KPSS Test
-            </span>
-            {rawKpss ? (
-              rawKpss.is_stationary ? (
-                <span className="flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Stationary
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 text-amber-400 text-xs font-mono font-semibold">
-                  <AlertTriangle className="w-3.5 h-3.5" /> Trend/Unit Root
-                </span>
-              )
-            ) : (
-              <span className="text-slate-500 text-xs font-mono">—</span>
-            )}
-          </div>
-          <div className="text-xl font-mono font-bold text-slate-100">
-            LM = {rawKpss ? rawKpss.statistic.toFixed(4) : "—"}
-          </div>
-          <div className="mt-2 text-xs font-mono space-y-1 text-slate-400">
-            <div>p-value: <span className="text-cyan-400 font-bold">{rawKpss ? rawKpss.p_value.toFixed(4) : "—"}</span></div>
-            <div>Critical 5%: {rawKpss && rawKpss.critical_values["5%"] ? rawKpss.critical_values["5%"].toFixed(4) : "0.4630"}</div>
-            <div className="text-[10px] text-slate-500 mt-1">{rawKpss ? rawKpss.conclusion : "KPSS check"}</div>
-          </div>
-        </div>
-
-        {/* Differenced ADF Test */}
-        <div className="p-4 rounded-lg bg-[#111827] border border-cyan-500/30 bg-cyan-950/10">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-mono uppercase font-bold text-cyan-400">
-              1st Difference ADF Test
-            </span>
-            <span className="flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Stationary (I(1))
-            </span>
-          </div>
-          <div className="text-xl font-mono font-bold text-slate-100">
-            t = {diffAdf.statistic.toFixed(4)}
-          </div>
-          <div className="mt-2 text-xs font-mono space-y-1 text-slate-400">
-            <div>p-value: <span className="text-emerald-400 font-bold">{diffAdf.p_value.toFixed(4)}</span></div>
-            <div>Critical 1%: {diffAdf.critical_values["1%"].toFixed(4)}</div>
-            <div className="text-[10px] text-emerald-400 font-semibold mt-1">Stationary after 1st differencing (Δy_t)</div>
-          </div>
         </div>
       </div>
 

@@ -1,373 +1,158 @@
-MSc Data Science Research Projects - Summer 2026
-# Create a Synthetic Bank: Interest Rate Risk and Behavioural Modelling
+# Quantitative Macroeconomic & Synthetic Banking Terminal
+### MSc Data Science Research Project — University of Leicester
 
-## MSc Data Science Dissertation Project
-
-**University of Leicester**
-
-### Project Overview
-
-This project develops a **synthetic retail banking dataset** to analyse the impact of **interest rate changes on a bank’s retail portfolio**. The work is based on historical **Bank of England (BoE)** and **Office for National Statistics (ONS)** data and addresses the problem faced by UK high street banks after the post-2008 period of prolonged low interest rates, where historical customer behaviour under different interest-rate environments was limited.
-
-The project combines **macroeconomic indicators**, **retail banking volume data**, **time-series analysis**, **linear regression**, **logistic regression**, and **synthetic customer generation** to simulate realistic banking portfolios under alternative economic scenarios.
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Python](https://img.shields.io/badge/Python-3.10-blue.svg?style=flat&logo=python&logoColor=white)](https://python.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3+-orange.svg?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-1.7+-red.svg?style=flat)](https://xgboost.readthedocs.io/)
 
 ---
 
-# Problem Statement
+## 1. Project Overview
 
-Banks need to assess **income risk and portfolio behaviour** when interest rates change. Historical customer-level data covering a wide range of economic conditions is often unavailable, particularly during periods of sustained low interest rates. This project creates a synthetic bank that reflects realistic UK retail banking behaviour and enables **scenario analysis under changing macroeconomic conditions**.
+This project develops an end-to-end **Quantitative Banking Terminal** and **Synthetic Retail Banking Simulation** to analyze the impact of **macroeconomic shocks and interest rate fluctuations** on retail banking credit and deposit portfolios.
 
----
-
-# Objectives
-
-* Collect historical UK macroeconomic and retail banking data from **BoE** and **ONS**
-* Perform time-series preprocessing and exploratory analysis
-* Model the relationship between macroeconomic variables and retail banking volumes
-* Predict mortgage approval behaviour using **Linear Regression**
-* Classify economic conditions using **Logistic Regression**
-* Generate a **synthetic customer-level banking dataset**
-* Simulate **interest-rate stress scenarios**
-* Measure the effect of macroeconomic changes on the synthetic banking portfolio
+Addressing the structural scarcity of longitudinal customer-level banking data across diverse interest-rate cycles in the UK, this platform integrates empirical historical data (Bank of England & ONS, 2008–2025) with supervised econometric models, time series diagnostics, generative AI synthesizers (CTGAN & TVAE), and interactive stress testing.
 
 ---
 
-# Data Sources
+## 2. Quantitative Model Architecture & Benchmark Metrics
 
-## Bank of England
+All models are trained and validated on canonical UK monthly macroeconomic time series (2008–2025, 216 monthly observations).
 
-* Bank Rate
-* Mortgage Approvals
-* Consumer Credit
-* Credit Card Lending
-* Household Current Account Deposits (LPMBF88)
-* Household Savings Deposits (LPMZ3TH, LPMZ3TN)
-
-## Office for National Statistics
-
-* Consumer Price Index (CPI)
-* GDP Growth
-* Unemployment Rate
-* House Price Index
-
-The historical dataset spans **2008-01 to 2025-12** at a **monthly frequency**.
+| Target Banking Aggregate | Model Architecture | Key Features / Lags | Metric ^2$ / Accuracy | MAE | RMSE |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Mortgage Approvals** | **XGBoost Regressor** | Bank Rate, CPI, GDP, Unemployment, HPI, Mortgage Lag | **^2 = 0.7154$** | 3,322.13 | 4,413.14 |
+| **Consumer Credit** | **Random Forest Regressor** | Bank Rate, CPI, GDP, Unemployment, Consumer Credit Lag | **^2 = 0.9215$** | 584.08 | 787.92 |
+| **Savings Accounts** | **Scaled Linear Regression** | Bank Rate, CPI, GDP, Unemployment, HPI, Savings Lag | **^2 = 0.9950$** | 1,944.04 | 2,614.21 |
+| **Current Accounts** | **Scaled Linear Regression** | Bank Rate, CPI, GDP, Unemployment, HPI, Current Acc Lag | **^2 = 0.9297$** | 4,104.52 | 7,711.75 |
+| **Credit Card Lending** | **Scaled Linear Regression** | Bank Rate, CPI, GDP, Unemployment, Credit Card Lag | **^2 = 0.9959$** | 196.90 | 236.07 |
+| **Economic Regime** | **Logistic Classifier** | Bank Rate, CPI, GDP, Unemployment | **.91\%$ Acc** (Spec: 1.0) | ROC-AUC: 0.8958 | F1: 0.60 |
 
 ---
 
-# Project Structure
+## 3. Directory Structure
 
-```text
-Create-Synthetic-Bank/
+`	ext
+msc-dsr-projects-group-12/
+├── backend/                             # High-performance FastAPI backend server
+│   ├── main.py                          # Application entrypoint & CORS middleware
+│   ├── config.py                        # Path management & model registry configuration
+│   ├── database.py                      # SQLite database connection manager
+│   ├── auth.py                          # Cryptographic password hashing & JWT tokens
+│   ├── requirements.txt                 # Python package dependencies
+│   ├── routers/                         # Dedicated API domain routers
+│   │   ├── auth.py                      # User login and registration
+│   │   ├── historical.py                # 216-month historical macroeconomic data API
+│   │   ├── eda.py                       # Pearson correlations and statistical moments
+│   │   ├── timeseries.py                # ADF stationarity & seasonal decomposition
+│   │   ├── predict.py                   # Model evaluation curves and R²/MAE/RMSE
+│   │   ├── logistic.py                  # Economic distress classification
+│   │   ├── synthetic.py                 # SDMetrics quality reports & CTGAN/TVAE preview
+│   │   ├── customer.py                  # 2.16M customer longitudinal query engine
+│   │   ├── scenario.py                  # Multi-period macroeconomic stress testing
+│   │   └── reports.py                   # Quantitative executive summary exports
+│   └── services/                        # Business logic & machine learning math services
+│       ├── model_service.py             # Model inference & prediction pipelines
+│       ├── timeseries_service.py        # Statsmodels ADF & decomposition engine
+│       └── synthetic_service.py         # SDMetrics & generative sample loader
 │
-├── data/
-│   ├── raw/                     # BoE and ONS source files
-│   ├── processed/               # Cleaned and merged datasets
-│   └── synthetic/               # Generated customer datasets
+├── frontend/                            # Next.js 14 Institutional Trading Terminal UI
+│   ├── package.json                     # Frontend dependencies (React 18, Recharts, Lucide)
+│   ├── next.config.mjs                  # API rewrites & compilation configuration
+│   ├── tailwind.config.ts               # Dark quantitative theme color system
+│   └── src/
+│       ├── app/                         # App Router pages (Overview, EDA, TimeSeries, etc.)
+│       ├── components/                  # Reusable widgets (TerminalCard, MetricCard, etc.)
+│       └── lib/                         # API client & number formatting helpers
 │
-├── notebooks/
-│   ├── 01_data_collection.ipynb
-│   ├── 02_time_series_analysis.ipynb
-│   ├── 03_linear_regression.ipynb
-│   ├── 04_logistic_regression.ipynb
-│   ├── 05_synthetic_generation.ipynb
-│   └── 06_scenario_analysis.ipynb
+├── CLEANED DATA/                        # Normalized historical macroeconomic truth
+│   └── FINAL_DS.csv                     # 216 observations × 13 variables (2008–2025)
 │
-├── dashboard/
-│   └── streamlit_app.py         # Interactive scenario analysis
+├── RAW_DATA/                            # Original Bank of England & ONS raw CSVs
 │
-├── models/
-│   ├── linear_model.pkl
-│   └── logistic_model.pkl
+├── python files/                        # Jupyter research & training notebooks
+│   ├── Consumer_Credit_Model.ipynb      # Consumer Credit regression training
+│   ├── Credit_Card_Model.ipynb          # Credit Card regression training
+│   ├── Current_Account_Model.ipynb      # Current Account regression training
+│   ├── Mortgage_Approvals_Model.ipynb   # Mortgage Approvals XGBoost training
+│   ├── Savings_Accounts_Model.ipynb     # Savings Deposits regression training
+│   ├── TimeSeries.ipynb                 # Econometric stationarity diagnostics
+│   ├── eda.ipynb                        # Exploratory data analysis & correlations
+│   └── logistic_regression.ipynb        # Economic regime classification
 │
-├── outputs/
-│   ├── figures/
-│   ├── tables/
-│   └── reports/
+├── synthetic_bank/                      # Generative AI models and evaluation outputs
+│   ├── models/                          # Serialized .pkl binaries, scalers & features
+│   ├── synthetic_bank_outputs/          # SDMetrics evaluation JSONs & CTGAN/TVAE CSVs
+│   └── Synthetic_Bank.ipynb             # CTGAN & TVAE generative pipeline notebook
 │
-├── Final_DS.csv
-├── requirements.txt
-└── README.md
-```
+├── .gitignore                           # Excludes build caches, node_modules & temp DBs
+├── .env.example                         # Environment variable configuration template
+├── package.json                         # Root orchestration script runner (concurrently)
+└── README.md                            # Comprehensive project documentation
+`
 
 ---
 
-# Methodology
+## 4. Quickstart & Local Installation
 
-## 1. Historical Dataset
+### Prerequisites
+* **Python 3.10+**
+* **Node.js 18+** & **npm**
 
-The first dataset is a **monthly macroeconomic and retail banking dataset** containing:
+### Step 1: Clone Repository
+`ash
+git clone https://github.com/your-username/msc-dsr-projects-group-12.git
+cd msc-dsr-projects-group-12
+`
 
-| Variable            |
-| ------------------- |
-| Month               |
-| Bank_Rate           |
-| CPI                 |
-| GDP_Growth          |
-| Unemployment_Rate   |
-| House_Price_Index   |
-| Current_Accounts    |
-| Savings_Accounts    |
-| Mortgage_Approvals  |
-| Consumer_Credit     |
-| Credit_Card_Lending |
+### Step 2: Install Backend Dependencies
+`ash
+python -m venv .venv
+# On Windows:
+.venv\Scriptsctivate
+# On macOS/Linux:
+source .venv/bin/activate
 
----
+pip install -r backend/requirements.txt
+`
 
-## 2. Time-Series Analysis
+### Step 3: Install Frontend Dependencies
+`ash
+npm install
+npm --prefix ./frontend install
+`
 
-Time-series preprocessing includes:
+### Step 4: Run Application
+Start both Backend and Frontend concurrently with a single command:
+`ash
+npm run dev
+`
 
-* Date conversion
-* Monthly indexing
-* Missing-value handling
-* Trend analysis
-* Rolling statistics
-* Stationarity testing
-* Differencing (where required)
-
----
-
-## 3. Linear Regression
-
-### Target Variable
-
-* Mortgage_Approvals
-
-### Features
-
-* Bank_Rate
-* CPI
-* GDP_Growth
-* Unemployment_Rate
-* House_Price_Index
-
-The model estimates how changes in macroeconomic conditions influence mortgage approval volumes.
-
-Evaluation metrics:
-
-* R²
-* MAE
-* RMSE
+* **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000)
+* **Backend API Docs (Swagger UI)**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* **API Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
 
 ---
 
-## 4. Logistic Regression
+## 5. Deployment Guidelines for GitHub
 
-A binary **Economy_Status** variable is created:
-
-* Good Economy (0)
-* Difficult Economy (1)
-
-Based on macroeconomic thresholds such as:
-
-* High Bank Rate
-* High CPI
-* Negative GDP Growth
-* High Unemployment
-
-The logistic model predicts the probability of a difficult economic environment.
-
-Evaluation metrics:
-
-* Accuracy
-* Precision
-* Recall
-* F1-score
-* ROC-AUC
+1. **Large File Handling**: Large databases (*.db, synthetic_bank.db) and build caches (.next/, 
+ode_modules/, __pycache__/) are excluded in .gitignore to keep the repository compact, fast, and compliant with GitHub's file size limits.
+2. **Offline-First Compatibility**: All fonts, icons, and chart packages are bundled locally without relying on external CDNs.
+3. **Environment Security**: Sensitive keys and production secrets should be managed using environment variables (refer to .env.example).
 
 ---
 
-## 5. Synthetic Customer Generation
-
-A synthetic customer dataset is generated using calibrated statistical distributions.
-
-### Customer Attributes
-
-* Customer_ID
-* Age
-* Income
-* Current_Balance
-* Savings_Balance
-* Mortgage_Balance
-* Loan_Balance
-* Credit_Card_Balance
-
-Macroeconomic variables for each month are attached to customer records, creating a time-dependent synthetic banking portfolio.
-
-Example:
-
-| Customer_ID | Month   | Age | Income | Current_Balance | Mortgage_Balance | Bank_Rate |
-| ----------- | ------- | --- | ------ | --------------- | ---------------- | --------- |
-| C000001     | 2024-01 | 34  | 42000  | 2850            | 185000           | 5.25      |
-| C000001     | 2024-02 | 34  | 42000  | 2720            | 184650           | 5.25      |
-
----
-
-# Scenario Analysis
-
-Scenario analysis is performed **after synthetic data generation**.
-
-Example scenarios:
-
-## Baseline
-
-* Bank Rate: 5.25%
-* CPI: 3.2%
-* GDP Growth: 0.4%
-* Unemployment: 4.1%
-
-## Stress Scenario
-
-* Bank Rate: 7.00%
-* CPI: 5.5%
-* GDP Growth: -0.8%
-* Unemployment: 6.8%
-
-The trained regression models are reused to predict:
-
-* Mortgage approvals
-* Economic regime
-* Portfolio changes
-* Mortgage payment increases
-* Aggregate current and savings balances
-* Estimated bank income impact
-
----
-
-# Interactive Dashboard
-
-A **Streamlit dashboard** enables real-time scenario analysis using sliders.
-
-Users can adjust:
-
-* Bank Rate
-* CPI
-* GDP Growth
-* Unemployment Rate
-
-The dashboard dynamically updates:
-
-* Predicted mortgage approvals
-* Economy status
-* Portfolio metrics
-* Risk indicators
-
-Run with:
-
-```bash
-streamlit run dashboard/streamlit_app.py
-```
-
----
-
-# Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/create-synthetic-bank.git
-cd create-synthetic-bank
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate:
-
-Windows
-
-```bash
-venv\\Scripts\\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# Running the Project
-
-### 1. Preprocess data
-
-```bash
-python scripts/preprocess.py
-```
-
-### 2. Train regression models
-
-```bash
-python scripts/train_models.py
-```
-
-### 3. Generate synthetic bank
-
-```bash
-python scripts/generate_synthetic_bank.py
-```
-
-### 4. Run scenario analysis
-
-```bash
-python scripts/scenario_analysis.py
-```
-
-### 5. Launch dashboard
-
-```bash
-streamlit run dashboard/streamlit_app.py
-```
-
----
-
-# Expected Outputs
-
-* Cleaned historical dataset
-* Trained linear regression model
-* Trained logistic regression model
-* Synthetic customer dataset
-* Scenario analysis results
-* Interactive dashboard visualisations
-* Portfolio comparison reports
-
----
-
-# Technologies Used
-
-* Python
-* Pandas
-* NumPy
-* Scikit-learn
-* Matplotlib
-* Seaborn
-* Statsmodels
-* Streamlit
-* Jupyter Notebook
-
----
-
-# Research Significance
-
-The project demonstrates how publicly available UK macroeconomic data can be transformed into a **synthetic retail banking environment** suitable for **interest-rate risk analysis**, **behavioural modelling**, and **stress testing**. The framework can support academic research, risk management studies, and the development of banking simulation tools where customer-level historical data is unavailable.
-
----
-
-# Author
-
-**Saketh Pakala Sivasubramanyam**
-
-**Nilesh Anand**
-
-**Jones Sachin Vanathu Chinnappan**
-
-**Sharma Murali Christian**
-
-MSc Data Science
-University of Leicester
-
-
+## 6. Authors & Research Attribution
+
+**MSc Data Science Dissertation Project**  
+*Department of Mathematics and Data Science*  
+*University of Leicester*
+
+* **Saketh Pakala Sivasubramanyam**
+* **Nilesh Anand**
+* **Jones Sachin Vanathu Chinnappan**
+* **Sharma Murali Christian**

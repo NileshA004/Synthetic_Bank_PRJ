@@ -1,0 +1,44 @@
+# Keep source code, package manifests, datasets, notebooks, models, and synthetic-bank assets versioned.
+# Ignore only local dependencies, caches, secrets, logs, and machine-specific files.
+
+# Python caches, tools, and virtual environments
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Local application databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Node / Next.js dependencies and build output
+node_modules/
+.next/
+
+# Environment files and secrets (the template stays committed)
+.env
+.env.*
+!.env.example
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary editor files
+*.log
+*.tmp
+*.swp
+*.swo
+# Generated synthetic artifacts too large for standard GitHub repositories
+synthetic_bank/synthetic_bank.db
+synthetic_bank/synthetic_bank_outputs/SYNTHETIC_CUSTOMER_MONTHLY_DATASET.csv

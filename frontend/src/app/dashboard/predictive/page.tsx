@@ -30,7 +30,7 @@ export default function PredictiveModellingPage() {
     { key: "Mortgage_Approvals", label: "Mortgage Approvals", finalModel: "XGBoost", pkl: "mortgage_xgb.pkl" },
     { key: "Savings_Accounts", label: "Savings Accounts", finalModel: "Linear Regression", pkl: "savings_lr.pkl" },
     { key: "Current_Accounts", label: "Current Accounts", finalModel: "Linear Regression", pkl: "current_account_lr.pkl" },
-    { key: "Consumer_Credit", label: "Consumer Credit", finalModel: "Linear Regression", pkl: "consumer_credit_lr.pkl" },
+    { key: "Consumer_Credit", label: "Consumer Credit", finalModel: "Random Forest", pkl: "consumer_credit_rf.pkl" },
     { key: "Credit_Card_Lending", label: "Credit Card Lending", finalModel: "Linear Regression", pkl: "credit_card_lr.pkl" },
   ];
 
@@ -187,9 +187,9 @@ export default function PredictiveModellingPage() {
         {/* Feature Importance / Coefficients */}
         {modelInfo && (
           <TerminalCard
-            title={targetMeta.finalModel === "XGBoost" ? "XGBoost Feature Importance" : "Linear Regression Coefficients"}
+            title={targetMeta.finalModel === "Linear Regression" ? "Linear Regression Coefficients" : `${targetMeta.finalModel} Feature Importance`}
             subtitle={`Input feature rankings for ${targetMeta.label}`}
-            badge={targetMeta.finalModel === "XGBoost" ? "Gini Importance" : "Standardized / Raw Beta"}
+            badge={targetMeta.finalModel === "Linear Regression" ? "Standardized / Raw Beta" : "Gini Importance"}
             badgeColor="cyan"
           >
             <div className="h-[260px] w-full pt-2">
@@ -204,9 +204,9 @@ export default function PredictiveModellingPage() {
                   <YAxis type="category" dataKey="feature" stroke="#64748B" fontSize={10} />
                   <Tooltip
                     contentStyle={{ backgroundColor: "#0E1424", borderColor: "#1E293B", borderRadius: "6px", fontSize: "11px", fontFamily: "JetBrains Mono" }}
-                    formatter={(v: any) => [Number(v).toFixed(4), targetMeta.finalModel === "XGBoost" ? "Importance" : "Coefficient"]}
+                    formatter={(v: any) => [Number(v).toFixed(4), targetMeta.finalModel === "Linear Regression" ? "Coefficient" : "Importance"]}
                   />
-                  <Bar dataKey={targetMeta.finalModel === "XGBoost" ? "importance" : "coefficient"} fill="#06B6D4" radius={[0, 3, 3, 0]} />
+                  <Bar dataKey={targetMeta.finalModel === "Linear Regression" ? "coefficient" : "importance"} fill="#06B6D4" radius={[0, 3, 3, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

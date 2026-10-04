@@ -1,0 +1,6 @@
+Model,Direction,Minimum_Change,Maximum_Change,Monotonic
+Current Accounts,Decreasing,-364.1442330504651,-364.1442330504069,True
+Savings Accounts,Increasing,1011.6432470458676,1011.6432470459549,True
+Mortgage Approvals,Non-monotonic,-1108.67578125,183.703125,False
+Consumer Credit,Increasing,90.21057905787893,90.21057905787893,True
+Credit Card Lending,Increasing,59.0891561195167,59.08915611953125,True

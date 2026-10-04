@@ -32,7 +32,7 @@ export default function LandingPage() {
     },
     {
       title: "Economic Regime Classification",
-      desc: "Validated Logistic Regression model classifying economic distress regimes with 100% precision and balanced weighting.",
+      desc: "Validated Logistic Regression model classifying economic distress regimes with 90.91% accuracy and 0.8958 ROC-AUC.",
       icon: Binary,
       accent: "text-indigo-400 border-indigo-500/30 bg-indigo-950/20"
     },

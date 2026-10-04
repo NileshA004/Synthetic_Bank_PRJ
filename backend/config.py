@@ -1,4 +1,5 @@
 import os
+import secrets
 from pathlib import Path
 
 # Base project directory (msc-dsr-projects-group-12)
@@ -20,7 +21,7 @@ SYNTHETIC_OUTPUTS_DIR = Path(os.getenv("SYNTHETIC_OUTPUTS_DIR", str(SYNTHETIC_BA
 AUTH_DB_PATH = Path(os.getenv("AUTH_DB_PATH", str(BACKEND_DIR / "auth.db")))
 
 # JWT configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "synthetic-bank-quant-terminal-secret-key-msc-dsr")
+SECRET_KEY = os.getenv("SECRET_KEY") or secrets.token_urlsafe(32)
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", str(60 * 24)))
 
@@ -63,8 +64,8 @@ APPROVED_MODELS = {
     "Consumer_Credit": {
         "target": "Consumer_Credit",
         "display_name": "Consumer Credit",
-        "model_type": "Linear Regression",
-        "model_file": "consumer_credit_lr.pkl",
+        "model_type": "Random Forest",
+        "model_file": "consumer_credit_rf.pkl",
         "feature_file": "consumer_credit_features.pkl",
         "scaler_file": None,
         "latest_file": "consumer_credit_latest.pkl",
@@ -86,8 +87,7 @@ APPROVED_MODELS = {
         "model_type": "Logistic Regression",
         "model_file": "economic_regime_logistic.pkl",
         "feature_file": "economic_regime_features.pkl",
-        "scaler_file": "economic_regime_scaler.pkl",
-        "threshold_file": "economic_regime_threshold.pkl",
+        "scaler_file": None,
         "latest_file": None,
         "unit": "Probability (0 to 1)"
     }
